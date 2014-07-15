@@ -88,6 +88,18 @@ case "$1" in
         echo "Installer finished"
         ;;
 
+  refresh)
+        echo "Refreshing Web site from pi home development area"
+        sudo killall raspimjpeg
+        sudo rm -r /var/www/*
+        sudo cp -r www/* /var/www/
+        sudo mkdir -p /var/www/media
+        sudo chown -R www-data:www-data /var/www
+        sudo mknod /var/www/FIFO p
+        sudo chmod 666 /var/www/FIFO
+        echo "Refresh done"
+        ;;        
+
   start)
         shopt -s nullglob
 

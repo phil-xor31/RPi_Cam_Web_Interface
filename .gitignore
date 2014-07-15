@@ -1,0 +1,7 @@
+# Files that match these type will be ignored when
+# committing to your Git repo.
+
+*.DS_Store
+*._*
+*.sublime-workspace
+
