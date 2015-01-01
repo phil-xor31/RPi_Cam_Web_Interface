@@ -1,5 +1,230 @@
 $(function() {
 
+  //
+  // MJPEG
+  //
+  var mjpeg_img;
+  var halted = 0;
+
+  function reload_img () {
+    if(!halted) 
+      mjpeg_img.prop('src', 'cam_pic.php?time=' + new Date().getTime());
+    else 
+      setTimeout(reload_img(), 500);
+  }
+
+  function error_img () {
+    setTimeout("mjpeg_img.prop('src', 'cam_pic.php?time=' + new Date().getTime());", 100);
+  }
+
+
+  // Ajax interface
+  function process_cmd_response(responseText) {
+
+    if(responseText == "ready") {
+      $("#video_button").prop("disabled", false);
+      $("#video_button").val("record video start");
+      $("#video_button").on('click', function() {send_cmd("ca 1");});
+      $("#image_button").prop("disabled", false);
+      $("#image_button").val("record image");
+      $("#image_button").on("click",function() {send_cmd("im");});
+      $("#timelapse_button").prop("disabled", false);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {send_cmd("tl " + ($("#tl_interval").val()*10));});
+      $("#md_button").prop("disabled", false);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {send_cmd("md 1");});
+      $("#halt_button").prop("disabled", false);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {send_cmd("ru 0");});
+      halted = 0;
+    }
+    else if(responseText == "md_ready") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", false);
+      $("#md_button").val("motion detection stop");
+      $("#md_button").on("click", function() {send_cmd("md 0");});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+      halted = 0;
+    }
+    else if(responseText == "video") {
+      $("#video_button").prop("disabled", false);
+      $("#video_button").val("record video stop");
+      $("#video_button").on("click", function() {send_cmd("ca 0");});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timedlapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "timelapse") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", false);
+      $("#timelapse_button").val("timelapse stop");
+      $("#timelapse_button").on("click", function() {send_cmd("tl 0");});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "md_video") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("recording video...");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "image") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("recording image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "boxing") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("video processing...");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "md_boxing") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("video processing...");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", true);
+      $("#halt_button").val("stop camera");
+      $("#halt_button").on("click", function() {});
+    }
+    else if(responseText == "halted") {
+      $("#video_button").prop("disabled", true);
+      $("#video_button").val("record video start");
+      $("#video_button").on("click", function() {});
+      $("#image_button").prop("disabled", true);
+      $("#image_button").val("record image");
+      $("#image_button").on("click", function() {});
+      $("#timelapse_button").prop("disabled", true);
+      $("#timelapse_button").val("timelapse start");
+      $("#timelapse_button").on("click", function() {});
+      $("#md_button").prop("disabled", true);
+      $("#md_button").val("motion detection start");
+      $("#md_button").on("click", function() {});
+      $("#halt_button").prop("disabled", false);
+      $("#halt_button").val("start camera");
+      $("#halt_button").on("click", function() {send_cmd("ru 1");});
+      halted = 1;
+    }
+    else if(responseText.substr(0,5) == "Error") {
+      alert("Error in RaspiMJPEG: " + responseText.substr(7) + "\nRestart RaspiMJPEG (./RPi_Cam_Web_Interface_Installer.sh start) or the whole RPi.");
+    }
+
+    reload_ajax(responseText);
+  }
+
+  function reload_ajax (last) {
+    $.ajax({
+        url: 'status_mjpeg.php',
+        type: 'GET',
+        dataType: 'TEXT',
+        cache: false,
+        data: {'last': last},
+        success: process_cmd_response
+    });
+  }
+
+  function send_cmd (cmd) {
+    $.ajax({
+      url: 'cmd_pipe.php',
+      type: 'GET',
+      dataType: 'TEXT',
+      cache: false,
+      data: {'cmd': cmd},
+      //success: 
+    });
+  }
+
+  //
+  // Init
+  //
+  function init() {
+
+    // mjpeg
+    mjpeg_img = $("#mjpeg_dest");
+    mjpeg_img.load(reload_img);
+    mjpeg_img.error(error_img);
+    // mjpeg_img = document.getElementById("mjpeg_dest");
+    // mjpeg_img.onload = reload_img;
+    // mjpeg_img.onerror = error_img;
+    reload_img();
+    // status
+    reload_ajax("");
+
+  }
+
+
   init();
 
   // event handlers for all the buttons and selectors on index.html

@@ -1,10 +1,10 @@
-//
-// Interface
-//
 
-//
-// MJPEG
-//
+Interface
+
+
+
+MJPEG
+
 var mjpeg_img;
 var halted = 0;
 
@@ -17,9 +17,9 @@ function error_img () {
   setTimeout("mjpeg_img.src = 'cam_pic.php?time=' + new Date().getTime();", 100);
 }
 
-//
-// Ajax Status
-//
+
+Ajax Status
+
 var ajax_status;
 
 if(window.XMLHttpRequest) {
@@ -202,9 +202,9 @@ function reload_ajax (last) {
 }
 
 
-//
-// Ajax Commands
-//
+
+Ajax Commands
+
 var ajax_cmd;
 
 if(window.XMLHttpRequest) {
@@ -219,9 +219,9 @@ function send_cmd (cmd) {
   ajax_cmd.send();
 }
 
-//
-// Init
-//
+
+Init
+
 function init() {
 
   // mjpeg
