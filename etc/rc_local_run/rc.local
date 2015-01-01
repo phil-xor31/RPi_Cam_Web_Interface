@@ -20,14 +20,14 @@ fi
 shopt -s nullglob
 
 video=-1
-for f in /var/www/media/video_*.mp4; do
+for f in /var/www/webcam/media/video_*.mp4; do
   video=`echo $f | cut -d '_' -f2 | cut -d '.' -f1`
 done
 video=`echo $video | sed 's/^0*//'`
 video=$((video+1))
 
 image=-1
-for f in /var/www/media/image_*.jpg; do
+for f in /var/www/webcam/media/image_*.jpg; do
   image=`echo $f | cut -d '_' -f2 | cut -d '.' -f1`
 done
 image=`echo $image | sed 's/^0*//'`

@@ -35,7 +35,7 @@ case "$1" in
         sudo apt-get remove -y apache2 php5 libapache2-mod-php5 gpac motion
         sudo apt-get autoremove -y
 
-        sudo rm -r /var/www/*
+        sudo rm -r /var/www/webcam/*
         sudo rm /usr/local/bin/raspimjpeg
         sudo rm /etc/raspimjpeg
         sudo cp -r etc/rc_local_std/rc.local /etc/
@@ -61,11 +61,11 @@ case "$1" in
         git pull origin master
         sudo apt-get install -y apache2 php5 libapache2-mod-php5 gpac motion
 
-        sudo cp -r www/* /var/www/
-        sudo mkdir -p /var/www/media
-        sudo chown -R www-data:www-data /var/www
-        sudo mknod /var/www/FIFO p
-        sudo chmod 666 /var/www/FIFO
+        sudo cp -r www/* /var/www/webcam/
+        sudo mkdir -p /var/www/webcam/media
+        sudo chown -R www-data:www-data /var/www/webcam
+        sudo mknod /var/www/webcam/FIFO p
+        sudo chmod 666 /var/www/webcam/FIFO
         sudo cp -r etc/apache2/sites-available/default /etc/apache2/sites-available/
         sudo chmod 644 /etc/apache2/sites-available/default
         sudo cp etc/apache2/conf.d/other-vhosts-access-log /etc/apache2/conf.d/other-vhosts-access-log
@@ -91,12 +91,12 @@ case "$1" in
   refresh)
         echo "Refreshing Web site from pi home development area"
         sudo killall raspimjpeg
-        sudo rm -r /var/www/*
-        sudo cp -r www/* /var/www/
-        sudo mkdir -p /var/www/media
-        sudo chown -R www-data:www-data /var/www
-        sudo mknod /var/www/FIFO p
-        sudo chmod 666 /var/www/FIFO
+        sudo rm -r /var/www/webcam/*
+        sudo cp -r www/* /var/www/webcam/
+        sudo mkdir -p /var/www/webcam/media
+        sudo chown -R www-data:www-data /var/www/webcam
+        sudo mknod /var/www/webcam/FIFO p
+        sudo chmod 666 /var/www/webcam/FIFO
         echo "Refresh done"
         ;;        
 
@@ -104,21 +104,21 @@ case "$1" in
         shopt -s nullglob
 
         video=-1
-        for f in /var/www/media/video_*.mp4; do
+        for f in /var/www/webcam/media/video_*.mp4; do
           video=`echo $f | cut -d '_' -f2 | cut -d '.' -f1`
         done
         video=`echo $video | sed 's/^0*//'`
         video=`expr $video + 1`
 
         image=-1
-        for f in /var/www/media/image_*.jpg; do
+        for f in /var/www/webcam/media/image_*.jpg; do
           image=`echo $f | cut -d '_' -f2 | cut -d '.' -f1`
         done
         image=`echo $image | sed 's/^0*//'`
         image=`expr $image + 1`
 
         shopt -u nullglob
-
+        
         sudo mkdir -p /dev/shm/mjpeg
         sudo raspimjpeg -ic $image -vc $video > /dev/null &
         echo "Started"
